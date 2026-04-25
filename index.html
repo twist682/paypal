@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Log In to PayPal Account</title>
+  <!-- Font Awesome 6 (Free Icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', 'Noto Sans', sans-serif;
+      background: linear-gradient(145deg, #f5f7fc 0%, #eef2f6 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    /* PayPal color scheme */
+    :root {
+      --paypal-blue: #0070ba;
+      --paypal-blue-dark: #003087;
+      --paypal-blue-light: #e6f2f9;
+      --paypal-error: #d9381e;
+      --text-dark: #1c1e24;
+      --text-muted: #5e6873;
+      --border-light: #e2e8f0;
+      --card-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    /* main login card container */
+    .login-container {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* header with PayPal logo & back link (like paypal login style) */
+    .login-header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--paypal-blue);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      padding: 10px 24px;
+      border-radius: 60px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+
+    .logo i {
+      font-size: 2rem;
+      color: var(--paypal-blue-dark);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link i {
+      margin-right: 6px;
+      font-size: 0.8rem;
+    }
+
+    .back-link:hover {
+      color: var(--paypal-blue);
+    }
+
+    /* login card */
+    .login-card {
+      background: white;
+      border-radius: 32px;
+      box-shadow: var(--card-shadow);
+      padding: 40px 36px;
+      transition: all 0.2s ease;
+    }
+
+    .login-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+
+    .login-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 20px;
+    }
+
+    /* input groups */
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    .input-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #2c3e4f;
+      font-size: 0.9rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      border: 1.5px solid var(--border-light);
+      border-radius: 20px;
+      background: white;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--paypal-blue);
+      box-shadow: 0 0 0 3px rgba(0, 112, 186, 0.15);
+    }
+
+    /* password row + forgot */
+    .password-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .forgot-link {
+      font-size: 0.8rem;
+      color: var(--paypal-blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    /* login button */
+    .login-btn {
+      width: 100%;
+      background: var(--paypal-blue);
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.05s;
+      margin-top: 12px;
+      margin-bottom: 24px;
+      font-family: inherit;
+    }
+
+    .login-btn:hover {
+      background: var(--paypal-blue-dark);
+    }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* separator */
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 24px 0 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .divider::before {
+      margin-right: 16px;
+    }
+    .divider::after {
+      margin-left: 16px;
+    }
+
+    /* alternative login options */
+    .alt-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .alt-btn {
+      background: white;
+      border: 1px solid var(--border-light);
+      padding: 12px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      color: #2c3e4f;
+      text-decoration: none;
+    }
+
+    .alt-btn i {
+      font-size: 1.3rem;
+    }
+
+    .alt-btn:hover {
+      background: #f9fafc;
+      border-color: #cbd5e1;
+    }
+
+    /* signup prompt */
+    .signup-prompt {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .signup-prompt a {
+      color: var(--paypal-blue);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .signup-prompt a:hover {
+      text-decoration: underline;
+    }
+
+    /* security note */
+    .security-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 30px;
+      font-size: 0.75rem;
+      color: #7c7e8c;
+      background: #f8fafd;
+      padding: 12px 16px;
+      border-radius: 60px;
+    }
+
+    .security-note i {
+      font-size: 0.9rem;
+      color: #2b6e3c;
+    }
+
+    /* error message styling (dynamic) */
+    .error-message {
+      background: #fee9e6;
+      color: var(--paypal-error);
+      padding: 12px 16px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 3px solid var(--paypal-error);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* footer minimal */
+    .footer-note {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.7rem;
+      color: #8c8f9a;
+    }
+
+    /* responsive adjustments */
+    @media (max-width: 500px) {
+      .login-card {
+        padding: 32px 24px;
+      }
+      .login-title {
+        font-size: 1.6rem;
+      }
+      body {
+        padding: 1rem;
+      }
+    }
+
+    /* subtle animation */
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(12px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .login-card {
+      animation: fadeSlide 0.35s ease-out;
+    }
+
+    /* dummy loader (for demo) */
+    .loading-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.6s linear infinite;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn-loading {
+      pointer-events: none;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-header">
+    <a href="#" class="logo" id="homeLink">
+      <i class="fab fa-paypal"></i> PayPal
+    </a>
+    <div>
+      <a href="#" class="back-link" id="backHomeLink"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+
+  <div class="login-card">
+    <h1 class="login-title">Log in to PayPal</h1>
+    <div class="login-sub">Enter your email or mobile number to continue</div>
+
+    <!-- dynamic error alert -->
+    <div id="errorBox" class="error-message hidden">
+      <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+    </div>
+
+    <form id="loginForm" action="#" method="post">
+      <div class="input-group">
+        <label class="input-label" for="email">Email or mobile number</label>
+        <input type="email" id="email" class="input-field" placeholder="e.g., name@example.com or +1 234 567 8900" autocomplete="email" value="">
+      </div>
+      <div class="input-group">
+        <div class="password-header">
+          <label class="input-label" for="password">Password</label>
+          <a href="#" class="forgot-link" id="forgotPwdLink">Forgot password?</a>
+        </div>
+        <input type="password" id="password" class="input-field" placeholder="Enter your password" autocomplete="current-password">
+      </div>
+
+      <button type="submit" id="loginSubmitBtn" class="login-btn">Log In</button>
+
+      <div class="divider">or</div>
+
+      <div class="alt-buttons">
+        <button type="button" id="googleBtn" class="alt-btn"><i class="fab fa-google"></i> Continue with Google</button>
+        <button type="button" id="appleBtn" class="alt-btn"><i class="fab fa-apple"></i> Continue with Apple</button>
+      </div>
+    </form>
+
+    <div class="signup-prompt">
+      Don't have an account? <a href="#" id="signupRedirect">Sign Up</a>
+    </div>
+
+    <div class="security-note">
+      <i class="fas fa-shield-alt"></i> <span>Secure login with industry-standard encryption</span>
+    </div>
+  </div>
+  <div class="footer-note">
+    <i class="far fa-question-circle"></i> Having trouble? <a href="#" style="color:#0070ba; text-decoration: none;">Visit Help Center</a>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('loginSubmitBtn');
+    const errorBox = document.getElementById('errorBox');
+    const errorTextSpan = document.getElementById('errorText');
+    const forgotLink = document.getElementById('forgotPwdLink');
+    const signupLink = document.getElementById('signupRedirect');
+    const googleBtn = document.getElementById('googleBtn');
+    const appleBtn = document.getElementById('appleBtn');
+    const backHomeLink = document.getElementById('backHomeLink');
+    const homeLogoLink = document.getElementById('homeLink');
+
+    // Helper: show error message
+    function showError(message) {
+      errorTextSpan.innerText = message;
+      errorBox.classList.remove('hidden');
+      // auto hide after 4 seconds
+      setTimeout(() => {
+        if (errorBox && !errorBox.classList.contains('hidden')) {
+          errorBox.classList.add('hidden');
+        }
+      }, 4000);
+    }
+
+    // Clear error on focus or typing (UX improvement)
+    function clearErrorOnInput() {
+      if (!errorBox.classList.contains('hidden')) {
+        errorBox.classList.add('hidden');
+      }
+    }
+    emailInput.addEventListener('input', clearErrorOnInput);
+    passwordInput.addEventListener('input', clearErrorOnInput);
+
+    // Simulate login validation (PayPal-like style but demo only)
+    function simulateLogin(email, password) {
+      // basic front-end validation mimicking real login checks (non-authenticated demo)
+      if (!email.trim()) {
+        showError("Please enter an email address or mobile number.");
+        return false;
+      }
+      // Very simple email format check (or mobile-like)
+      const emailPattern = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+      const mobilePattern = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{3,14}$/im;
+      const isEmail = emailPattern.test(email);
+      const isMobile = mobilePattern.test(email) || /^[0-9+\-\s\(\)]{5,20}$/.test(email);
+      if (!isEmail && !isMobile && email.trim().length > 0) {
+        // Also allow simple "test@paypal" demo
+        if(!email.includes('@') && !/^[0-9+ ]{5,}$/.test(email)) {
+          showError("Enter a valid email address or phone number.");
+          return false;
+        }
+      }
+      if (!password.trim()) {
+        showError("Enter your password.");
+        return false;
+      }
+      if (password.length < 3) {
+        showError("Incorrect password. Please try again (demo hint: any password works except empty).");
+        return false;
+      }
+      return true;
+    }
+
+    // Loading animation while "logging in"
+    function setLoading(loading) {
+      if (loading) {
+        submitBtn.classList.add('btn-loading');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="loading-spinner"></span> Logging in...';
+        submitBtn.setAttribute('data-original', originalText);
+        submitBtn.disabled = true;
+      } else {
+        submitBtn.classList.remove('btn-loading');
+        const original = submitBtn.getAttribute('data-original') || 'Log In';
+        submitBtn.innerHTML = original;
+        submitBtn.disabled = false;
+      }
+    }
+
+    // Handle form submission (simulate PayPal login flow with alert success)
+    async function handleLogin(event) {
+      event.preventDefault();
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!simulateLogin(email, password)) {
+        return;
+      }
+
+      setLoading(true);
+      // Simulate network delay (PayPal style request)
+      setTimeout(() => {
+        setLoading(false);
+        // In a real scenario you'd redirect. For demo we show success and redirect placeholder.
+        // According to PayPal's actual webapp, after success -> account dashboard.
+        // We mimic success message & redirect to "account overview" simulation.
+        alert("✅ Login successful! (Demo environment)\nWelcome back, " + (email.includes('@') ? email.split('@')[0] : email) + ".\nRedirecting to your PayPal dashboard...");
+        // optional: simulate redirect to dashboard page
+        // For demonstration we simply reset form? But better show a mock redirect.
+        window.location.href = "#";  // In real clone we'd change, but here we simulate a success message without actual redirect.
+        // For better UX, we show an alert and clear error if any.
+        console.log("Demo login success");
+        // Optionally reset form to give clean demo state
+        // But we preserve it. We'll also not redirect to external site.
+        // In a proper PayPal replica you'd redirect to /myaccount. For now we just inform.
+        // To avoid confusion, we display a success note but also stay.
+        const successMsg = document.createElement('div');
+        successMsg.className = 'error-message';
+        successMsg.style.background = "#e0f2e9";
+        successMsg.style.color = "#0f6e3f";
+        successMsg.style.borderLeftColor = "#2b6e3c";
+        successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Login successful — you’d be redirected to your account.';
+        const card = document.querySelector('.login-card');
+        const existingErr = document.getElementById('errorBox');
+        if (!card.contains(successMsg) && !document.querySelector('.success-temp')) {
+          successMsg.classList.add('success-temp');
+          card.insertBefore(successMsg, card.firstChild);
+          setTimeout(() => successMsg.remove(), 3000);
+        }
+        errorBox.classList.add('hidden');
+      }, 1000);
+    }
+
+    form.addEventListener('submit', handleLogin);
+
+    // Forgot password interaction (real PayPal goes to recovery)
+    forgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("🔐 Password reset flow: We’ll send a recovery link to your email. (Demo interaction)");
+    });
+
+    // Sign up link
+    signupLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("📝 Create your PayPal account — Join millions of users worldwide. (Demo sign-up page would open)");
+    });
+
+    // Alternative login methods (Google / Apple)
+    googleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("🔑 Google Sign-In demo: You would be redirected to Google OAuth. (PayPal supports this in real integration)");
+    });
+
+    appleBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      alert("🍎 Sign in with Apple — fast & private. (Demo flow)");
+    });
+
+    // Back to home / logo click demo simulation
+    function backToHome() {
+      alert("🏠 Returning to PayPal homepage (demo). In real site this would redirect to www.paypal.com");
+      // Simulate redirect to index (we can change location but to keep demo integrity just alert)
+    }
+    backHomeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      backToHome();
+    });
+    homeLogoLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      backToHome();
+    });
+
+    // Additional micro-interaction: prefill demo account? Not required but optional: provide one-click demo account
+    // For better demonstration we add small helper: double click email field -> fill demo credentials (not mandatory but helpful)
+    const demoHint = document.createElement('div');
+    demoHint.style.fontSize = '0.7rem';
+    demoHint.style.marginTop = '8px';
+    demoHint.style.textAlign = 'right';
+    demoHint.style.color = '#7f8c8d';
+    demoHint.innerHTML = '<i class="fas fa-info-circle"></i> Demo: use any email + any password (min 3 chars)';
+    const inputGroupLast = document.querySelector('.input-group:last-of-type');
+    if (inputGroupLast) inputGroupLast.insertAdjacentElement('afterend', demoHint);
+
+    // Optional: Fill demo email and password for quick testing (only on double-click hint)
+    const demoFill = () => {
+      if (!emailInput.value && !passwordInput.value) {
+        emailInput.value = 'demo@paypal.com';
+        passwordInput.value = 'secure123';
+      } else if (!emailInput.value) {
+        emailInput.value = 'user@example.com';
+      } else if (!passwordInput.value) {
+        passwordInput.value = 'demoPass';
+      } else {
+        emailInput.value = 'hello@paypal.com';
+        passwordInput.value = 'paypal123';
+      }
+    };
+    demoHint.style.cursor = 'pointer';
+    demoHint.addEventListener('dblclick', demoFill);
+    demoHint.title = 'Double-click to fill demo credentials';
+  })();
+</script>
+</body>
+</html>
